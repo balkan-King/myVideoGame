@@ -21,6 +21,7 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
+import ch.noseryoung.gameexampmle.Controller;
 import ch.noseryoung.gameexampmle.MyGdxGame;
 import ch.noseryoung.gameexampmle.Scenes.Hud;
 import ch.noseryoung.gameexampmle.Sprites.Mario;
@@ -42,6 +43,8 @@ public class PlayScreen implements Screen {
 
     private Mario mario;
 
+    Controller controller;
+
 
     public PlayScreen(MyGdxGame game) {
         this.game = game;
@@ -56,6 +59,8 @@ public class PlayScreen implements Screen {
         world = new World(new Vector2(0, -10), true);
         b2dr = new Box2DDebugRenderer();
         mario = new Mario(world);
+
+        controller = new Controller();
 
         BodyDef bDef = new BodyDef();
         PolygonShape shape = new PolygonShape();
@@ -126,12 +131,14 @@ public class PlayScreen implements Screen {
     }
 
     private void handleInput(float delta) {
-        if (Gdx.input.isKeyJustPressed(Input.Keys.UP))
-            mario.body.applyLinearImpulse(new Vector2(0, 4f), mario.body.getWorldCenter(), true);
-        if (Gdx.input.isKeyJustPressed(Input.Keys.RIGHT) && mario.body.getLinearVelocity().x <= 2)
+
+        if (controller.isRightPressed() && mario.body.getLinearVelocity().x <= 2)
             mario.body.applyLinearImpulse(new Vector2(0.1f, 0), mario.body.getWorldCenter(), true);
-        if (Gdx.input.isKeyJustPressed(Input.Keys.LEFT) && mario.body.getLinearVelocity().x <= -2)
+        if (controller.isLeftPressed() && mario.body.getLinearVelocity().x >= -2)
             mario.body.applyLinearImpulse(new Vector2(-0.1f, 0), mario.body.getWorldCenter(), true);
+
+        if (controller.isUpPressed() && mario.body.getLinearVelocity().y == 0)
+            mario.body.applyLinearImpulse(new Vector2(0, 4f), mario.body.getWorldCenter(), true);
 
 
     }
@@ -159,11 +166,13 @@ public class PlayScreen implements Screen {
 
         game.batch.setProjectionMatrix(hud.stage.getCamera().combined);
         hud.stage.draw();
+        controller.draw();
     }
 
     @Override
     public void resize(int width, int height) {
         gamePort.update(width, height);
+        controller.resize(width, height);
     }
 
     @Override

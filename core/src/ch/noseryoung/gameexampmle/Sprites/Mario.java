@@ -24,9 +24,10 @@ public class Mario extends Sprite {
         bdef.type = BodyDef.BodyType.DynamicBody;
         body = world.createBody(bdef);
 
+
         FixtureDef fdef = new FixtureDef();
         CircleShape shape = new CircleShape();
-        shape.setRadius(5/MyGdxGame.PPM);
+        shape.setRadius(8/MyGdxGame.PPM);
 
         fdef.shape = shape;
         body.createFixture(fdef);
