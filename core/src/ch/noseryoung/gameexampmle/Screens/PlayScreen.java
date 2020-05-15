@@ -25,6 +25,7 @@ import ch.noseryoung.gameexampmle.Controller;
 import ch.noseryoung.gameexampmle.MyGdxGame;
 import ch.noseryoung.gameexampmle.Scenes.Hud;
 import ch.noseryoung.gameexampmle.Sprites.Mario;
+import ch.noseryoung.gameexampmle.Tools.WorldCreator;
 
 public class PlayScreen implements Screen {
 
@@ -58,71 +59,12 @@ public class PlayScreen implements Screen {
         gameCam.position.set(gamePort.getWorldWidth() / 2, gamePort.getWorldHeight() / 2, 0);
         world = new World(new Vector2(0, -10), true);
         b2dr = new Box2DDebugRenderer();
-        mario = new Mario(world);
 
         controller = new Controller();
 
-        BodyDef bDef = new BodyDef();
-        PolygonShape shape = new PolygonShape();
-        FixtureDef fDef = new FixtureDef();
-        Body body;
+        new WorldCreator(world, map);
 
-        for (MapObject object : map.getLayers().get(2).getObjects().getByType(RectangleMapObject.class)) {
-            Rectangle rect = ((RectangleMapObject) object).getRectangle();
-            bDef.type = BodyDef.BodyType.StaticBody;
-            bDef.position.set((rect.getX() + rect.getWidth() / 2) / MyGdxGame.PPM, (rect.getY() + rect.getHeight() / 2) / MyGdxGame.PPM);
-
-            body = world.createBody(bDef);
-
-            shape.setAsBox(rect.getWidth() / 2 / MyGdxGame.PPM, rect.getHeight() / 2 / MyGdxGame.PPM);
-            fDef.shape = shape;
-
-            body.createFixture(fDef);
-        }
-
-        //create pipe bodies/fixtures
-        for (MapObject object : map.getLayers().get(3).getObjects().getByType(RectangleMapObject.class)) {
-            Rectangle rect = ((RectangleMapObject) object).getRectangle();
-            bDef.type = BodyDef.BodyType.StaticBody;
-            bDef.position.set((rect.getX() + rect.getWidth() / 2) / MyGdxGame.PPM, (rect.getY() + rect.getHeight() / 2) / MyGdxGame.PPM);
-
-            body = world.createBody(bDef);
-
-            shape.setAsBox(rect.getWidth() / 2 / MyGdxGame.PPM, rect.getHeight() / 2 / MyGdxGame.PPM);
-            fDef.shape = shape;
-
-            body.createFixture(fDef);
-        }
-
-        //create brick bodies/fixture
-        for (MapObject object : map.getLayers().get(5).getObjects().getByType(RectangleMapObject.class)) {
-            Rectangle rect = ((RectangleMapObject) object).getRectangle();
-            bDef.type = BodyDef.BodyType.StaticBody;
-            bDef.position.set((rect.getX() + rect.getWidth() / 2) / MyGdxGame.PPM, (rect.getY() + rect.getHeight() / 2) / MyGdxGame.PPM);
-
-            body = world.createBody(bDef);
-
-            shape.setAsBox(rect.getWidth() / 2 / MyGdxGame.PPM, rect.getHeight() / 2 / MyGdxGame.PPM);
-            fDef.shape = shape;
-
-            body.createFixture(fDef);
-        }
-
-        //create coin bodies/fixtures
-        for (MapObject object : map.getLayers().get(4).getObjects().getByType(RectangleMapObject.class)) {
-            Rectangle rect = ((RectangleMapObject) object).getRectangle();
-            bDef.type = BodyDef.BodyType.StaticBody;
-            bDef.position.set((rect.getX() + rect.getWidth() / 2) / MyGdxGame.PPM, (rect.getY() + rect.getHeight() / 2) / MyGdxGame.PPM);
-
-            body = world.createBody(bDef);
-
-            shape.setAsBox(rect.getWidth() / 2 / MyGdxGame.PPM, rect.getHeight() / 2 / MyGdxGame.PPM);
-            fDef.shape = shape;
-
-            body.createFixture(fDef);
-        }
-
-
+        mario = new Mario(world);
     }
 
     @Override
@@ -192,6 +134,10 @@ public class PlayScreen implements Screen {
 
     @Override
     public void dispose() {
-
+        map.dispose();
+        renderer.dispose();
+        world.dispose();
+        b2dr.dispose();
+        hud.dispose();
     }
 }
